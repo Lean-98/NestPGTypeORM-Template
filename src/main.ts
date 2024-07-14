@@ -17,6 +17,7 @@ async function bootstrap() {
   );
 
   const config = new DocumentBuilder()
+    .addBearerAuth()
     .setTitle('NestJS PostgreSQL TypeORM Boilerplate')
     .setDescription(
       'Boilerplate API description and endpoints for starting projects with NestJS, PostgreSQL, and TypeORM',
@@ -25,6 +26,8 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
+
+  app.enableCors({});
 
   await app.listen(process.env.PORT);
   logger.log(`App running on port: ${process.env.PORT}`);

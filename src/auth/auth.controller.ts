@@ -1,6 +1,6 @@
 import { Controller, Post, Body, Get, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { CreateUserDto, LoginUserDto } from './dto';
 // import { AuthGuard } from './auth.guard';
@@ -23,12 +23,15 @@ export class AuthController {
     return this.authService.login(loginUserDto);
   }
 
+  @ApiBearerAuth()
   @Get('check-status')
   @Auth()
   checkAuthStatus(@GetUser() user: User) {
     return this.authService.checkAuthStatus(user);
   }
 
+  // Example route protected
+  @ApiBearerAuth()
   @Get('private')
   @RoleProtected('super-user', 'admin') // use this to protect the route
   @UseGuards(AuthGuard(), UserRoleGuard)
