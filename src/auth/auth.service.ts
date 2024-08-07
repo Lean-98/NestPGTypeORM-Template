@@ -10,7 +10,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { CreateUserDto, LoginUserDto } from './dto';
+import {
+  CreateUserDto,
+  LoginUserDto,
+  LoginResponseDto,
+  CreateUserResponseDto,
+} from './dto';
 import { User } from './entities/user.entity';
 import { JwtPayload } from './interfaces';
 
@@ -23,7 +28,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async create(createUserDto: CreateUserDto) {
+  async create(createUserDto: CreateUserDto): Promise<CreateUserResponseDto> {
     try {
       const { password, image = '', ...userData } = createUserDto;
       const user = this.userRepository.create({
@@ -48,8 +53,7 @@ export class AuthService {
     }
   }
 
-  async login(loginUserDto: LoginUserDto) {
-    // try {
+  async login(loginUserDto: LoginUserDto): Promise<LoginResponseDto> {
     const { email, password } = loginUserDto;
     const user = await this.userRepository.findOne({
       where: { email },
@@ -73,10 +77,6 @@ export class AuthService {
         image: user.image || '',
       }),
     };
-
-    // } catch (error) {
-    //   this.handleDBExceptions(error);
-    // }
   }
 
   async checkAuthStatus(user: User) {
